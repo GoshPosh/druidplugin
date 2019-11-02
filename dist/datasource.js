@@ -31,6 +31,7 @@ function (angular, _, dateMath, moment) {
     instanceSettings.jsonData = instanceSettings.jsonData || {};
     this.supportMetrics = true;
     this.periodGranularity = instanceSettings.jsonData.periodGranularity;
+    this.periodOrigin = instanceSettings.jsonData.periodOrigin;
 
     function replaceTemplateValues(obj,scopedVars, attrList) {
       if (obj.type === 'in') {
@@ -60,6 +61,20 @@ function (angular, _, dateMath, moment) {
       ['year', moment.duration(1, 'year')]
     ];
 
+    var GRANULARITIESPERIODLOOKUP = {
+        'second': 'P1S',
+        'minute': 'P0H1M',
+        'fifteen_minute': 'P0H15M',
+        'thirty_minute': 'P0H30M',
+        'hour': 'P1H',
+        'day': 'P1D',
+        'week': 'P7D',
+        'month': 'P1M',
+        'quarter': 'P3M',
+        'year': 'P1Y'
+    };
+
+
     var filterTemplateExpanders = {
       "selector": _.partialRight(replaceTemplateValues, ['value']),
       "regex": _.partialRight(replaceTemplateValues, ['pattern']),
@@ -81,9 +96,20 @@ function (angular, _, dateMath, moment) {
     };
 
     this.testDatasource = function() {
+      if(this.periodOrigin!=""){
+          if(!this.isIsoDate(this.periodOrigin)){
+              return { status: "error", message: "Origin time must be in ISO8601 (YYYY-MM-DDTHH:MM:SS.sssZ) format", title: "Error" };
+          }
+      }
       return this._get('/druid/v2/datasources').then(function () {
         return { status: "success", message: "Druid Data source is working", title: "Success" };
       });
+    };
+
+    this.isIsoDate = function(str) {
+      if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
+        var d = new Date(str);
+         return d.toISOString()===str;
     };
 
     //Get list of available datasources
@@ -159,9 +185,12 @@ function (angular, _, dateMath, moment) {
         //Round up to start of an interval
         //Width of bar chars in Grafana is determined by size of the smallest interval
         var roundedFrom = granularity === "all" ? from : roundUpStartTime(from, granularity);
-        if(dataSource.periodGranularity!=""){
-            if(granularity==='day'){
-                granularity = {"type": "period", "period": "P1D", "timeZone": dataSource.periodGranularity}
+          if (dataSource.periodGranularity != "") {
+            if(granularity in GRANULARITIESPERIODLOOKUP){
+              granularity = {"type": "period", "period": GRANULARITIESPERIODLOOKUP[granularity], "timeZone": dataSource.periodGranularity}
+              if (dataSource.periodOrigin != "") {
+                granularity["origin"] = dataSource.periodOrigin
+              }
             }
         }
         return dataSource._doQuery(roundedFrom, to, granularity, target, options.scopedVars);

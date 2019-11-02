@@ -2,7 +2,7 @@
 <div class="gf-form-group">
     <h3 class="page-heading">Druid Settings</h3>
     <div class="gf-form max-width-70">
-        <span class="gf-form-label">Period Granularity</span>
+        <span class="gf-form-label width-10">Period Granularity</span>
         <div class="gf-form-select-wrapper gf-form-select-wrapper--has-help-icon max-width-50">
             <select class="gf-form-input" ng-model="ctrl.current.jsonData.periodGranularity"
                     spellcheck='false'>
@@ -118,6 +118,16 @@
             </select>
             <info-popover mode="right-absolute">This enables the to query hourly data in different timezone.</info-popover>
         </div>
+    </div>
+    <div class="gf-form max-width-30">
+        <label class="gf-form-label width-10">
+            Period Origin
+        </label>
+        <input type="text" class="gf-form-input" ng-model="ctrl.current.jsonData.periodOrigin" spellcheck='false'>
+        <info-popover mode="right-absolute">This enables the to query to compute from a different epoch start, useful to
+            start week from Sunday.
+        </info-popover>
+        </input>
     </div>
 </div>
 
