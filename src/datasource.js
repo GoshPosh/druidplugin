@@ -141,14 +141,18 @@ function (angular, _, dateMath, moment) {
       var dataSource = this;
       var from = dateToMoment(options.range.from, false);
       var to = dateToMoment(options.range.to, true);
-      dataSource.periodGranularity = (
-          if(dataSource.periodGranularity=="dashboard"){
-            if(options.timezone!=""){ options.timezone }
-            else if(options.timezone=="browser"){ Intl.DateTimeFormat().resolvedOptions().timeZone }
-            else{ console.log("grafana not sending timezone")}
-          }
-          else{ dataSource.periodGranularity }
-       );
+      if(dataSource.periodGranularity=="dashboard") {
+        if(options.timezone!="") {
+            dataSource.periodGranularity = options.timezone
+         }
+        else if(options.timezone=="browser") {
+            dataSource.periodGranularity = Intl.DateTimeFormat().resolvedOptions().timeZone
+         }
+        else { console.log("grafana not sending timezone")}
+       }
+      else {
+        dataSource.periodGranularity
+      }
 
       console.log("Do query");
       console.log(options);
