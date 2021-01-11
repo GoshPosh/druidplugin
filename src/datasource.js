@@ -141,7 +141,7 @@ function (angular, _, dateMath, moment) {
       var dataSource = this;
       var from = dateToMoment(options.range.from, false);
       var to = dateToMoment(options.range.to, true);
-      var timeZone = (options.timezone!="browser" && options.timezone!=""?options.timezone:datasource.periodGranularity);
+      var timeZone = (options.timezone!="" && options.timezone!="browser"?options.timezone:dataSource.periodGranularity);
 
       console.log("Do query");
       console.log(options);
