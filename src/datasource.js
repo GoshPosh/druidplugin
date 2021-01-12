@@ -150,7 +150,6 @@ function (angular, _, dateMath, moment) {
         if(options.timezone=="browser") {
             timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
          }
-        else { console.log("grafana not sending timezone")}
        }
       else {
         timeZone = dataSource.periodGranularity
@@ -177,6 +176,9 @@ function (angular, _, dateMath, moment) {
             if(granularity==='day'){
                 granularity = {"type": "period", "period": "P1D", "timeZone": timeZone}
             }
+        }
+        else {
+            console.log("grafana not sending timezone")
         }
         return dataSource._doQuery(roundedFrom, to, granularity, target, options.scopedVars);
       });
