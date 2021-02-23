@@ -3,7 +3,11 @@
   "name": "Druid",
   "id": "abhisant-druid-datasource",
 
+  "alerting": true,
   "metrics": true,
+  "annotations": true,
+  "backend": true,
+  "executable": "druid-plugin",
 
   "info": {
     "version": "0.0.5",
